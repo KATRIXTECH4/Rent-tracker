@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RentTrack Pro | Tenant Management System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card2: #172033;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --blue: #38bdf8;
+      --blue2: #0284c7;
+      --purple: #a78bfa;
+      --green: #34d399;
+      --green2: #059669;
+      --red: #f87171;
+      --red2: #dc2626;
+      --yellow: #fbbf24;
+      --navy: #1e3a5f;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-top {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .logo-name { font-size: 1.2rem; font-weight: 800; color: #f1f5f9; letter-spacing: -0.5px; }
+    .logo-sub  { font-size: 0.72rem; color: var(--dim); }
+
+    .btn-add {
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff; border: none; padding: 10px 20px;
+      border-radius: 8px; cursor: pointer; font-weight: 700;
+      font-size: 0.9rem; display: flex; align-items: center; gap: 6px;
+      transition: opacity .2s;
+    }
+    .btn-add:hover { opacity: .85; }
+
+    /* TABS */
+    .tabs {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent; color: var(--dim);
+      border: none; padding: 10px 20px; cursor: pointer;
+      font-weight: 600; font-size: 0.88rem;
+      border-radius: 8px 8px 0 0; transition: all .2s;
+    }
+    .tab-btn.active { background: var(--blue); color: #fff; }
+
+    /* MAIN */
+    main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    /* NOTIFICATION */
+    #notification {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+      padding: 12px 20px; border-radius: 10px;
+      color: #fff; font-weight: 600; font-size: .9rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      display: none; animation: slideIn .3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(120px); opacity: 0; }
+      to   { transform: translateX(0);     opacity: 1; }
+    }
+
+    /* STAT CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card); border-radius: 14px;
+      padding: 20px; border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+
+    .stat-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .stat-icon-bg {
+      position: absolute; top: -10px; right: -10px;
+      font-size: 3.8rem; opacity: .07;
+    }
+
+    .stat-value { font-size: 1.7rem; font-weight: 800; }
+    .stat-label { font-size: .82rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
+    .stat-sub   { font-size: .72rem; color: var(--dim); }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border); overflow: hidden;
+    }
+
+    .table-head {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      font-weight: 700; color: #f1f5f9; font-size: 1rem;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead tr { background: var(--bg); }
+    thead th {
+      padding: 12px 16px; text-align: left;
+      font-size: .76rem; color: var(--dim);
+      font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+    }
+
+    tbody tr { border-top: 1px solid var(--border); }
+    tbody tr:nth-child(even) { background: var(--card2); }
+    tbody td { padding: 12px 16px; font-size: .9rem; }
+
+    /* TENANT CARDS */
+    .tenants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 16px;
+    }
+
+    .tenant-card {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border); overflow: hidden;
+      transition: transform .2s;
+    }
+    .tenant-card:hover { transform: translateY(-3px); }
+
+    .tc-header {
+      background: linear-gradient(135deg, var(--navy), var(--bg));
+      padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+
+    .tc-room { font-size: .72rem; color: var(--blue); font-weight: 700; margin-bottom: 2px; }
+    .tc-name { font-size: 1.08rem; font-weight: 800; color: #f1f5f9; }
+    .tc-phone { font-size: .82rem; color: var(--muted); margin-top: 3px; }
+
+    .badge {
+      padding: 4px 12px; border-radius: 20px;
+      font-size: .75rem; font-weight: 700; white-space: nowrap;
+    }
+    .badge-paid    { background: #dcfce7; color: #16a34a; }
+    .badge-partial { background: #fef3c7; color: #d97706; }
+    .badge-unpaid  { background: #fee2e2; color: #dc2626; }
+
+    .tc-body { padding: 16px 20px; }
+
+    .mini-stats {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px; margin-bottom: 14px;
+    }
+
+    .mini-stat {
+      background: var(--bg); padding: 10px;
+      border-radius: 8px; text-align: center;
+    }
+    .mini-label { font-size: .68rem; color: var(--dim); margin-bottom: 3px; }
+    .mini-value { font-size: .98rem; font-weight: 700; }
+
+    /* PROGRESS BAR */
+    .progress-wrap { margin-bottom: 14px; }
+    .progress-top {
+      display: flex; justify-content: space-between;
+      font-size: .72rem; color: var(--dim); margin-bottom: 5px;
+    }
+    .progress-bg {
+      background: var(--bg); border-radius: 20px;
+      height: 8px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 20px;
+      transition: width .5s ease;
+    }
+
+    /* ACTION BUTTONS */
+    .tc-actions { display: flex; gap: 8px; }
+
+    .btn-pay {
+      flex: 1;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff; border: none; padding: 9px;
+      border-radius: 8px; cursor: pointer; font-weight: 700;
+      font-size: .83rem; transition: opacity .2s;
+    }
+    .btn-pay:hover { opacity: .85; }
+
+    .btn-hist {
+      background: var(--border); color: var(--muted);
+      border: none; padding: 9px 14px; border-radius: 8px;
+      cursor: pointer; font-size: .83rem; font-weight: 600;
+    }
+
+    .btn-del {
+      background: #3f1212; color: var(--red);
+      border: none; padding: 9px 14px; border-radius: 8px;
+      cursor: pointer; font-size: .85rem;
+    }
+
+    .tc-notes {
+      margin-top: 10px; font-size: .78rem;
+      color: var(--dim); font-style: italic;
+    }
+
+    /* SEARCH/FILTER */
+    .search-row {
+      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1; min-width: 200px;
+      background: var(--card); border: 1px solid var(--border);
+      color: #f1f5f9; padding: 10px 16px; border-radius: 8px;
+      font-size: .9rem; outline: none;
+    }
+
+    .filter-btn {
+      background: var(--card); color: var(--dim);
+      border: 1px solid var(--border); padding: 10px 16px;
+      border-radius: 8px; cursor: pointer;
+      font-weight: 600; font-size: .83rem;
+      text-transform: capitalize; transition: all .2s;
+    }
+    .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center; padding: 60px 20px;
+      color: var(--dim);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-title { font-weight: 600; font-size: 1rem; }
+    .empty-sub { font-size: .85rem; margin-top: 4px; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.75);
+      display: none; align-items: center;
+      justify-content: center; z-index: 1000; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--card); border-radius: 16px;
+      width: 100%; border: 1px solid var(--border);
+      overflow: hidden; animation: popIn .25s ease;
+    }
+    .modal-sm { max-width: 420px; }
+    .modal-md { max-width: 480px; }
+
+    @keyframes popIn {
+      from { transform: scale(.9); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--navy), var(--bg));
+      padding: 20px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-title { font-weight: 800; font-size: 1.05rem; color: #f1f5f9; }
+    .modal-sub   { font-size: .8rem; color: var(--dim); margin-top: 2px; }
+
+    .modal-close {
+      background: none; border: none; color: var(--dim);
+      cursor: pointer; font-size: 1.6rem; line-height: 1;
+    }
+
+    .modal-body { padding: 24px; }
+
+    /* FORM */
+    .form-group { margin-bottom: 16px; }
+
+    .form-label {
+      display: block; font-size: .8rem;
+      color: var(--muted); font-weight: 600; margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--bg); border: 1px solid var(--border);
+      color: #f1f5f9; padding: 10px 14px; border-radius: 8px;
+      font-size: .95rem; outline: none; transition: border-color .2s;
+    }
+    .form-input:focus { border-color: var(--blue); }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* MODAL FOOTER BUTTONS */
+    .modal-footer { display: flex; gap: 10px; margin-top: 8px; }
+
+    .btn-cancel {
+      flex: 1; background: var(--border); color: var(--muted);
+      border: none; padding: 12px; border-radius: 8px;
+      cursor: pointer; font-weight: 600;
+    }
+
+    .btn-confirm-green {
+      flex: 2;
+      background: linear-gradient(135deg, var(--green), var(--green2));
+      color: #fff; border: none; padding: 12px;
+      border-radius: 8px; cursor: pointer; font-weight: 700;
+    }
+
+    .btn-confirm-blue {
+      flex: 2;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #fff; border: none; padding: 12px;
+      border-radius: 8px; cursor: pointer; font-weight: 700;
+    }
+
+    .btn-confirm-red {
+      flex: 1; background: var(--red2); color: #fff;
+      border: none; padding: 12px; border-radius: 8px;
+      cursor: pointer; font-weight: 700;
+    }
+
+    /* PAYMENT SUMMARY IN PAY MODAL */
+    .pay-summary {
+      background: var(--bg); border-radius: 10px; padding: 14px;
+      margin-bottom: 20px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+    }
+    .pay-sum-item { text-align: center; }
+    .pay-sum-label { font-size: .68rem; color: var(--dim); margin-bottom: 3px; }
+    .pay-sum-val { font-size: .95rem; font-weight: 700; }
+
+    /* PAYMENT HISTORY ROWS */
+    .hist-del-btn {
+      background: #3f1212; color: var(--red);
+      border: none; padding: 5px 12px;
+      border-radius: 6px; cursor: pointer; font-size: .78rem;
+    }
+
+    /* CONFIRM MODAL */
+    .confirm-body { padding: 28px; text-align: center; }
+    .confirm-icon { font-size: 3rem; margin-bottom: 12px; }
+    .confirm-title { font-weight: 800; font-size: 1.05rem; color: #f1f5f9; margin-bottom: 8px; }
+    .confirm-text  { color: var(--muted); font-size: .88rem; margin-bottom: 24px; }
+
+    /* DELETE PAYMENT BTN */
+    .payments-tab-wrap {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px;
+    }
+    .payments-tab-head {
+      background: var(--bg); padding: 14px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .tenants-grid { grid-template-columns: 1fr; }
+      header { padding: 0 12px; }
+      main { padding: 16px 12px; }
+      .tab-btn { padding: 10px 12px; font-size: .8rem; }
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+  </style>
+</head>
+<body>
+
+  <!-- NOTIFICATION -->
+  <div id="notification"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-top">
+      <div class="logo">
+        <div class="logo-icon">🏠</div>
+        <div>
+          <div class="logo-name">RentTrack Pro</div>
+          <div class="logo-sub">Tenant Management System</div>
+        </div>
+      </div>
+      <button class="btn-add" onclick="openAddModal()">+ Add Tenant</button>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
+      <button class="tab-btn"        onclick="switchTab('tenants',   this)">👥 Tenants</button>
+      <button class="tab-btn"        onclick="switchTab('payments',  this)">💰 Payments</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard">
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="table-wrap">
+        <div class="table-head">📋 All Tenants Overview</div>
+        <div id="dashboard-table"></div>
+      </div>
+    </div>
+
+    <!-- TENANTS TAB -->
+    <div id="tab-tenants" style="display:none">
+      <div class="search-row">
+        <input class="search-input" id="search-input" placeholder="🔍  Search by name, room or phone..." oninput="renderTenants()">
+        <button class="filter-btn active" onclick="setFilter('all',   this)">All</button>
+        <button class="filter-btn"        onclick="setFilter('paid',    this)">Paid</button>
+        <button class="filter-btn"        onclick="setFilter('partial', this)">Partial</button>
+        <button class="filter-btn"        onclick="setFilter('unpaid',  this)">Unpaid</button>
+      </div>
+      <div class="tenants-grid" id="tenants-grid"></div>
+    </div>
+
+    <!-- PAYMENTS TAB -->
+    <div id="tab-payments" style="display:none">
+      <div style="font-weight:700;font-size:1.05rem;color:#f1f5f9;margin-bottom:20px;">💰 Payment History — All Tenants</div>
+      <div id="payments-list"></div>
+    </div>
+  </main>
+
+  <!-- ══════════════ ADD TENANT MODAL ══════════════ -->
+  <div class="modal-overlay" id="modal-add">
+    <div class="modal modal-md">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">🏠 Add New Tenant</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-add')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input class="form-input" id="f-name" type="text" placeholder="e.g. John Kamau">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Room Number *</label>
+            <input class="form-input" id="f-room" type="text" placeholder="e.g. A1, 101">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Monthly Rent (KES) *</label>
+            <input class="form-input" id="f-rent" type="number" placeholder="e.g. 5000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input class="form-input" id="f-phone" type="tel" placeholder="e.g. +254 700 000 000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (Optional)</label>
+          <input class="form-input" id="f-notes" type="text" placeholder="e.g. Deposit paid, Long-term tenant">
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-add')">Cancel</button>
+          <button class="btn-confirm-blue" onclick="addTenant()">Add Tenant</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ RECORD PAYMENT MODAL ══════════════ -->
+  <div class="modal-overlay" id="modal-pay">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">💰 Record Payment</div>
+          <div class="modal-sub" id="pay-modal-sub"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-pay')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="pay-summary" id="pay-summary"></div>
+        <div class="form-group">
+          <label class="form-label">Amount Paid (KES) *</label>
+          <input class="form-input" id="p-amount" type="number" placeholder="Enter amount">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Date *</label>
+          <input class="form-input" id="p-date" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Note (Optional)</label>
+          <input class="form-input" id="p-note" type="text" placeholder="e.g. Cash, M-PESA">
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-pay')">Cancel</button>
+          <button class="btn-confirm-green" onclick="savePayment()">Save Payment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ CONFIRM DELETE MODAL ══════════════ -->
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal modal-sm">
+      <div class="confirm-body">
+        <div class="confirm-icon">⚠️</div>
+        <div class="confirm-title">Remove Tenant?</div>
+        <div class="confirm-text">This will permanently delete the tenant and all their payment records. This action cannot be undone.</div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('modal-confirm')">Cancel</button>
+          <button class="btn-confirm-red" onclick="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── STATE ───────────────────────────────────────────────
+    let tenants       = JSON.parse(localStorage.getItem('renttrack-tenants') || '[]');
+    let currentFilter = 'all';
+    let currentPayId  = null;
+    let pendingDelete = null;
+
+    // ─── PERSIST ─────────────────────────────────────────────
+    function save() {
+      localStorage.setItem('renttrack-tenants', JSON.stringify(tenants));
+    }
+
+    // ─── NOTIFICATION ─────────────────────────────────────────
+    function notify(msg, type = 'success') {
+      const el = document.getElementById('notification');
+      el.textContent = (type === 'error' ? '⚠️ ' : '✅ ') + msg;
+      el.style.background = type === 'error' ? '#dc2626' : '#16a34a';
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    // ─── TABS ─────────────────────────────────────────────────
+    function switchTab(tab, btn) {
+      ['dashboard','tenants','payments'].forEach(t => {
+        document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
+      });
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderAll();
+    }
+
+    // ─── STATUS ───────────────────────────────────────────────
+    function getStatus(t) {
+      const paid = t.payments.reduce((s, p) => s + p.amount, 0);
+      if (paid <= 0)       return { label: 'Unpaid',  cls: 'badge-unpaid',  pct: 0 };
+      if (paid >= t.rent)  return { label: 'Fully Paid', cls: 'badge-paid', pct: 100 };
+      return { label: 'Partial', cls: 'badge-partial', pct: Math.round((paid / t.rent) * 100) };
+    }
+
+    function getBalance(t) {
+      const paid = t.payments.reduce((s, p) => s + p.amount, 0);
+      return Math.max(0, t.rent - paid);
+    }
+
+    function getPaid(t) {
+      return t.payments.reduce((s, p) => s + p.amount, 0);
+    }
+
+    function progressColor(pct) {
+      if (pct >= 100) return '#34d399';
+      if (pct >= 50)  return '#38bdf8';
+      return '#f87171';
+    }
+
+    // ─── RENDER ALL ───────────────────────────────────────────
+    function renderAll() {
+      renderDashboard();
+      renderTenants();
+      renderPayments();
+    }
+
+    // ─── DASHBOARD ────────────────────────────────────────────
+    function renderDashboard() {
+      const totalRent      = tenants.reduce((s, t) => s + t.rent, 0);
+      const totalCollected = tenants.reduce((s, t) => s + getPaid(t), 0);
+      const totalBalance   = tenants.reduce((s, t) => s + getBalance(t), 0);
+      const fullyPaid      = tenants.filter(t => getBalance(t) === 0 && getPaid(t) > 0).length;
+      const overdue        = tenants.filter(t => getPaid(t) === 0).length;
+
+      const stats = [
+        { label:'Total Tenants',       value: tenants.length,                          icon:'👥', color:'#38bdf8', sub:'registered'  },
+        { label:'Expected Rent',        value:`KES ${totalRent.toLocaleString()}`,       icon:'🏠', color:'#a78bfa', sub:'this month'  },
+        { label:'Amount Collected',     value:`KES ${totalCollected.toLocaleString()}`,  icon:'💰', color:'#34d399', sub:'received'    },
+        { label:'Outstanding Balance',  value:`KES ${totalBalance.toLocaleString()}`,    icon:'⚠️', color:'#f87171', sub:'pending'     },
+        { label:'Fully Paid',           value: fullyPaid,                               icon:'✅', color:'#34d399', sub:'tenants'     },
+        { label:'Not Paid',             value: overdue,                                 icon:'🔴', color:'#f87171', sub:'tenants'     },
+      ];
+
+      document.getElementById('stats-grid').innerHTML = stats.map(s => `
+        <div class="stat-card">
+          <div class="stat-icon-bg">${s.icon}</div>
+          <div class="stat-icon">${s.icon}</div>
+          <div class="stat-value" style="color:${s.color}">${s.value}</div>
+          <div class="stat-label">${s.label}</div>
+          <div class="stat-sub">${s.sub}</div>
+        </div>
+      `).join('');
+
+      if (tenants.length === 0) {
+        document.getElementById('dashboard-table').innerHTML = `
+          <div class="empty">
+            <div class="empty-icon">🏠</div>
+            <div class="empty-title">No tenants added yet</div>
+            <div class="empty-sub">Click "Add Tenant" to get started</div>
+          </div>`;
+        return;
+      }
+
+      document.getElementById('dashboard-table').innerHTML = `
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Room</th><th>Tenant Name</th><th>Phone</th>
+                <th>Monthly Rent</th><th>Paid</th><th>Balance</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tenants.map(t => {
+                const paid = getPaid(t);
+                const bal  = getBalance(t);
+                const st   = getStatus(t);
+                return `
+                  <tr>
+                    <td style="color:#38bdf8;font-weight:700">#${t.room}</td>
+                    <td style="color:#f1f5f9;font-weight:600">${t.name}</td>
+                    <td style="color:#94a3b8">${t.phone}</td>
+                    <td style="color:#a78bfa;font-weight:600">KES ${t.rent.toLocaleString()}</td>
+                    <td style="color:#34d399;font-weight:600">KES ${paid.toLocaleString()}</td>
+                    <td style="color:${bal > 0 ? '#f87171' : '#34d399'};font-weight:700">KES ${bal.toLocaleString()}</td>
+                    <td><span class="badge ${st.cls}">${st.label}</span></td>
+                  </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    // ─── TENANTS ──────────────────────────────────────────────
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTenants();
+    }
+
+    function renderTenants() {
+      const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+
+      const list = tenants.filter(t => {
+        const matchQ = t.name.toLowerCase().includes(q) ||
+                       t.room.toLowerCase().includes(q)  ||
+                       t.phone.includes(q);
+        const paid = getPaid(t);
+        const bal  = getBalance(t);
+        const matchF =
+          currentFilter === 'all'     ? true :
+          currentFilter === 'paid'    ? bal === 0 && paid > 0 :
+          currentFilter === 'partial' ? bal > 0 && paid > 0 :
+          paid === 0;
+        return matchQ && matchF;
+      });
+
+      const grid = document.getElementById('tenants-grid');
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-title">No tenants found</div>
+          <div class="empty-sub">Try a different search or filter</div>
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(t => {
+        const paid = getPaid(t);
+        const bal  = getBalance(t);
+        const st   = getStatus(t);
+        const pct  = st.pct;
+        return `
+          <div class="tenant-card">
+            <div class="tc-header">
+              <div>
+                <div class="tc-room">ROOM #${t.room}</div>
+                <div class="tc-name">${t.name}</div>
+                <div class="tc-phone">📱 ${t.phone}</div>
+              </div>
+              <span class="badge ${st.cls}">${st.label}</span>
+            </div>
+            <div class="tc-body">
+              <div class="mini-stats">
+                <div class="mini-stat">
+                  <div class="mini-label">MONTHLY</div>
+                  <div class="mini-value" style="color:#a78bfa">KES ${t.rent.toLocaleString()}</div>
+                </div>
+                <div class="mini-stat">
+                  <div class="mini-label">PAID</div>
+                  <div class="mini-value" style="color:#34d399">KES ${paid.toLocaleString()}</div>
+                </div>
+                <div class="mini-stat">
+                  <div class="mini-label">BALANCE</div>
+                  <div class="mini-value" style="color:${bal > 0 ? '#f87171' : '#34d399'}">KES ${bal.toLocaleString()}</div>
+                </div>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-top">
+                  <span>Payment Progress</span>
+                  <span style="color:#94a3b8;font-weight:700">${pct}%</span>
+                </div>
+                <div class="progress-bg">
+                  <div class="progress-fill" style="width:${pct}%;background:${progressColor(pct)}"></div>
+                </div>
+              </div>
+              <div class="tc-actions">
+                <button class="btn-pay" onclick="openPayModal('${t.id}')">+ Record Payment</button>
+                <button class="btn-hist" onclick="goPayments()">History</button>
+                <button class="btn-del" onclick="openConfirm('${t.id}')">🗑</button>
+              </div>
+              ${t.notes ? `<div class="tc-notes">📝 ${t.notes}</div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ─── PAYMENTS TAB ─────────────────────────────────────────
+    function renderPayments() {
+      const el = document.getElementById('payments-list');
+      const withPayments = tenants.filter(t => t.payments.length > 0);
+
+      if (withPayments.length === 0) {
+        el.innerHTML = `<div class="empty">
+          <div class="empty-icon">💰</div>
+          <div class="empty-title">No payment records yet</div>
+          <div class="empty-sub">Record payments from the Tenants tab</div>
+        </div>`;
+        return;
+      }
+
+      el.innerHTML = withPayments.map(t => `
+        <div class="payments-tab-wrap">
+          <div class="payments-tab-head">
+            <div>
+              <span style="color:#38bdf8;font-weight:700">Room #${t.room}</span>
+              <span style="color:#94a3b8;margin-left:10px">${t.name}</span>
+            </div>
+            <span style="color:#64748b;font-size:.82rem">${t.payments.length} payment(s)</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th><th>Amount Paid</th><th>Note</th><th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${t.payments.map(p => `
+                  <tr>
+                    <td style="color:#94a3b8">📅 ${p.date}</td>
+                    <td style="color:#34d399;font-weight:700">KES ${p.amount.toLocaleString()}</td>
+                    <td style="color:#64748b">${p.note || '—'}</td>
+                    <td><button class="hist-del-btn" onclick="deletePayment('${t.id}','${p.id}')">Delete</button></td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>`).join('');
+    }
+
+    // ─── ADD TENANT ───────────────────────────────────────────
+    function openAddModal() {
+      ['f-name','f-room','f-rent','f-phone','f-notes'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      openModal('modal-add');
+    }
+
+    function addTenant() {
+      const name  = document.getElementById('f-name').value.trim();
+      const room  = document.getElementById('f-room').value.trim();
+      const rent  = parseFloat(document.getElementById('f-rent').value);
+      const phone = document.getElementById('f-phone').value.trim();
+      const notes = document.getElementById('f-notes').value.trim();
+
+      if (!name || !room || !phone || isNaN(rent) || rent <= 0) {
+        notify('Please fill all required fields.', 'error'); return;
+      }
+      if (tenants.find(t => t.room.toLowerCase() === room.toLowerCase())) {
+        notify('Room number already exists!', 'error'); return;
+      }
+
+      tenants.push({
+        id: Date.now().toString(),
+        name, room, phone, rent, notes,
+        payments: [],
+        joinDate: new Date().toISOString().split('T')[0]
+      });
+
+      save();
+      closeModal('modal-add');
+      notify(`${name} added successfully!`);
+      renderAll();
+    }
+
+    // ─── PAYMENT ──────────────────────────────────────────────
+    function openPayModal(id) {
+      const t = tenants.find(t => t.id === id);
+      if (!t) return;
+      currentPayId = id;
+
+      const paid = getPaid(t);
+      const bal  = getBalance(t);
+
+      document.getElementById('pay-modal-sub').textContent = `Room #${t.room} — ${t.name}`;
+      document.getElementById('pay-summary').innerHTML = `
+        <div class="pay-sum-item">
+          <div class="pay-sum-label">MONTHLY</div>
+          <div class="pay-sum-val" style="color:#a78bfa">KES ${t.rent.toLocaleString()}</div>
+        </div>
+        <div class="pay-sum-item">
+          <div class="pay-sum-label">PAID</div>
+          <div class="pay-sum-val" style="color:#34d399">KES ${paid.toLocaleString()}</div>
+        </div>
+        <div class="pay-sum-item">
+          <div class="pay-sum-label">BALANCE</div>
+          <div class="pay-sum-val" style="color:#f87171">KES ${bal.toLocaleString()}</div>
+        </div>`;
+
+      document.getElementById('p-amount').value = '';
+      document.getElementById('p-date').value   = new Date().toISOString().split('T')[0];
+      document.getElementById('p-note').value   = '';
+      openModal('modal-pay');
+    }
+
+    function savePayment() {
+      const amt  = parseFloat(document.getElementById('p-amount').value);
+      const date = document.getElementById('p-date').value;
+      const note = document.getElementById('p-note').value.trim();
+
+      if (isNaN(amt) || amt <= 0) { notify('Enter a valid amount.', 'error'); return; }
+      if (!date)                   { notify('Select a payment date.', 'error'); return; }
+
+      tenants = tenants.map(t => {
+        if (t.id !== currentPayId) return t;
+        return { ...t, payments: [...t.payments, { id: Date.now().toString(), amount: amt, date, note }] };
+      });
+
+      save();
+      closeModal('modal-pay');
+      notify('Payment recorded successfully!');
+      renderAll();
+    }
+
+    // ─── DELETE PAYMENT ───────────────────────────────────────
+    function deletePayment(tenantId, payId) {
+      tenants = tenants.map(t => {
+        if (t.id !== tenantId) return t;
+        return { ...t, payments: t.payments.filter(p => p.id !== payId) };
+      });
+      save();
+      notify('Payment deleted.');
+      renderAll();
+    }
+
+    // ─── DELETE TENANT ────────────────────────────────────────
+    function openConfirm(id) {
+      pendingDelete = id;
+      openModal('modal-confirm');
+    }
+
+    function confirmDelete() {
+      tenants = tenants.filter(t => t.id !== pendingDelete);
+      pendingDelete = null;
+      save();
+      closeModal('modal-confirm');
+      notify('Tenant removed.');
+      renderAll();
+    }
+
+    // ─── MODAL HELPERS ────────────────────────────────────────
+    function openModal(id)  { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function goPayments() {
+      const btns = document.querySelectorAll('.tab-btn');
+      switchTab('payments', btns[2]);
+    }
+
+    // Close modals when clicking overlay
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+
+    // ─── INIT ─────────────────────────────────────────────────
+    renderAll();
+  </script>
+</body>
+</html>
