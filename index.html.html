@@ -23,7 +23,7 @@
       --red: #f87171;
       --red2: #dc2626;
       --yellow: #fbbf24;
-      --navy: #1e3a5f;
+      --navy: #1e3c5f;
     }
 
     body {
@@ -77,6 +77,11 @@
       transition: opacity .2s;
     }
     .btn-add:hover { opacity: .85; }
+
+    .sync-status {
+      font-size: 0.75rem; color: var(--green);
+      display: flex; align-items: center; gap: 6px;
+    }
 
     /* TABS */
     .tabs {
@@ -383,7 +388,6 @@
     .confirm-title { font-weight: 800; font-size: 1.05rem; color: #f1f5f9; margin-bottom: 8px; }
     .confirm-text  { color: var(--muted); font-size: .88rem; margin-bottom: 24px; }
 
-    /* DELETE PAYMENT BTN */
     .payments-tab-wrap {
       background: var(--card); border-radius: 14px;
       border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px;
@@ -391,6 +395,12 @@
     .payments-tab-head {
       background: var(--bg); padding: 14px 20px;
       display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center; padding: 60px; color: var(--blue);
+      font-size: 1.1rem; font-weight: 600;
     }
 
     /* Responsive */
@@ -421,7 +431,10 @@
           <div class="logo-sub">Tenant Management System</div>
         </div>
       </div>
-      <button class="btn-add" onclick="openAddModal()">+ Add Tenant</button>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div class="sync-status" id="sync-status">🔄 Syncing...</div>
+        <button class="btn-add" onclick="openAddModal()">+ Add Tenant</button>
+      </div>
     </div>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
@@ -431,8 +444,10 @@
   </header>
 
   <main>
+    <div id="loading" class="loading">Loading your data from cloud...</div>
+    
     <!-- DASHBOARD TAB -->
-    <div id="tab-dashboard">
+    <div id="tab-dashboard" style="display:none">
       <div class="stats-grid" id="stats-grid"></div>
       <div class="table-wrap">
         <div class="table-head">📋 All Tenants Overview</div>
@@ -459,13 +474,11 @@
     </div>
   </main>
 
-  <!-- ══════════════ ADD TENANT MODAL ══════════════ -->
+  <!-- ADD TENANT MODAL -->
   <div class="modal-overlay" id="modal-add">
     <div class="modal modal-md">
       <div class="modal-header">
-        <div>
-          <div class="modal-title">🏠 Add New Tenant</div>
-        </div>
+        <div><div class="modal-title">🏠 Add New Tenant</div></div>
         <button class="modal-close" onclick="closeModal('modal-add')">×</button>
       </div>
       <div class="modal-body">
@@ -499,7 +512,7 @@
     </div>
   </div>
 
-  <!-- ══════════════ RECORD PAYMENT MODAL ══════════════ -->
+  <!-- RECORD PAYMENT MODAL -->
   <div class="modal-overlay" id="modal-pay">
     <div class="modal modal-sm">
       <div class="modal-header">
@@ -531,7 +544,7 @@
     </div>
   </div>
 
-  <!-- ══════════════ CONFIRM DELETE MODAL ══════════════ -->
+  <!-- CONFIRM DELETE MODAL -->
   <div class="modal-overlay" id="modal-confirm">
     <div class="modal modal-sm">
       <div class="confirm-body">
@@ -546,18 +559,105 @@
     </div>
   </div>
 
-  <script>
-    // ─── STATE ───────────────────────────────────────────────
-    let tenants       = JSON.parse(localStorage.getItem('renttrack-tenants') || '[]');
-    let currentFilter = 'all';
-    let currentPayId  = null;
-    let pendingDelete = null;
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-    // ─── PERSIST ─────────────────────────────────────────────
-    function save() {
-      localStorage.setItem('renttrack-tenants', JSON.stringify(tenants));
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRNST5CSSLvEIPzPoZNtJi7arruX9SJFI",
+      authDomain: "tracking-system-1c5e3.firebaseapp.com",
+      projectId: "tracking-system-1c5e3",
+      storageBucket: "tracking-system-1c5e3.firebasestorage.app",
+      messagingSenderId: "895847529322",
+      appId: "1:895847529322:web:06af48c830608f61ee8313",
+      measurementId: "G-2XFK5E1JS4"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const tenantsRef = collection(db, 'tenants');
+
+    // Global State
+    window.tenants = [];
+    window.currentFilter = 'all';
+    window.currentPayId = null;
+    window.pendingDelete = null;
+
+    // Sync Status
+    function updateSyncStatus(status) {
+      const el = document.getElementById('sync-status');
+      if (status === 'synced') {
+        el.innerHTML = '✅ Synced to Cloud';
+        el.style.color = '#34d399';
+      } else {
+        el.innerHTML = '🔄 Syncing...';
+        el.style.color = '#38bdf8';
+      }
     }
 
+    // Load Tenants from Firebase (Real-time)
+    onSnapshot(tenantsRef, (snapshot) => {
+      window.tenants = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('tab-dashboard').style.display = '';
+      
+      window.renderAll();
+      updateSyncStatus('synced');
+    });
+
+    // Save Tenant to Firebase
+    window.saveTenantToFirebase = async (tenantData) => {
+      try {
+        updateSyncStatus('syncing');
+        await addDoc(tenantsRef, tenantData);
+        updateSyncStatus('synced');
+        return true;
+      } catch (e) {
+        console.error("Error adding tenant:", e);
+        window.notify('Failed to save to cloud!', 'error');
+        return false;
+      }
+    };
+
+    // Update Tenant in Firebase
+    window.updateTenantInFirebase = async (id, data) => {
+      try {
+        updateSyncStatus('syncing');
+        const tenantDoc = doc(db, 'tenants', id);
+        await updateDoc(tenantDoc, data);
+        updateSyncStatus('synced');
+        return true;
+      } catch (e) {
+        console.error("Error updating tenant:", e);
+        window.notify('Failed to update cloud!', 'error');
+        return false;
+      }
+    };
+
+    // Delete Tenant from Firebase
+    window.deleteTenantFromFirebase = async (id) => {
+      try {
+        updateSyncStatus('syncing');
+        const tenantDoc = doc(db, 'tenants', id);
+        await deleteDoc(tenantDoc);
+        updateSyncStatus('synced');
+        return true;
+      } catch (e) {
+        console.error("Error deleting tenant:", e);
+        window.notify('Failed to delete from cloud!', 'error');
+        return false;
+      }
+    };
+  </script>
+
+  <script>
     // ─── NOTIFICATION ─────────────────────────────────────────
     function notify(msg, type = 'success') {
       const el = document.getElementById('notification');
@@ -762,7 +862,7 @@
     // ─── PAYMENTS TAB ─────────────────────────────────────────
     function renderPayments() {
       const el = document.getElementById('payments-list');
-      const withPayments = tenants.filter(t => t.payments.length > 0);
+      const withPayments = tenants.filter(t => t.payments && t.payments.length > 0);
 
       if (withPayments.length === 0) {
         el.innerHTML = `<div class="empty">
@@ -811,7 +911,7 @@
       openModal('modal-add');
     }
 
-    function addTenant() {
+    async function addTenant() {
       const name  = document.getElementById('f-name').value.trim();
       const room  = document.getElementById('f-room').value.trim();
       const rent  = parseFloat(document.getElementById('f-rent').value);
@@ -825,17 +925,17 @@
         notify('Room number already exists!', 'error'); return;
       }
 
-      tenants.push({
-        id: Date.now().toString(),
+      const newTenant = {
         name, room, phone, rent, notes,
         payments: [],
         joinDate: new Date().toISOString().split('T')[0]
-      });
+      };
 
-      save();
-      closeModal('modal-add');
-      notify(`${name} added successfully!`);
-      renderAll();
+      const success = await saveTenantToFirebase(newTenant);
+      if (success) {
+        closeModal('modal-add');
+        notify(`${name} added successfully!`);
+      }
     }
 
     // ─── PAYMENT ──────────────────────────────────────────────
@@ -868,7 +968,7 @@
       openModal('modal-pay');
     }
 
-    function savePayment() {
+    async function savePayment() {
       const amt  = parseFloat(document.getElementById('p-amount').value);
       const date = document.getElementById('p-date').value;
       const note = document.getElementById('p-note').value.trim();
@@ -876,26 +976,33 @@
       if (isNaN(amt) || amt <= 0) { notify('Enter a valid amount.', 'error'); return; }
       if (!date)                   { notify('Select a payment date.', 'error'); return; }
 
-      tenants = tenants.map(t => {
-        if (t.id !== currentPayId) return t;
-        return { ...t, payments: [...t.payments, { id: Date.now().toString(), amount: amt, date, note }] };
-      });
+      const tenant = tenants.find(t => t.id === currentPayId);
+      if (!tenant) return;
 
-      save();
-      closeModal('modal-pay');
-      notify('Payment recorded successfully!');
-      renderAll();
+      const updatedPayments = [...(tenant.payments || []), {
+        id: Date.now().toString(),
+        amount: amt,
+        date,
+        note
+      }];
+
+      const success = await updateTenantInFirebase(currentPayId, { payments: updatedPayments });
+      if (success) {
+        closeModal('modal-pay');
+        notify('Payment recorded successfully!');
+      }
     }
 
     // ─── DELETE PAYMENT ───────────────────────────────────────
-    function deletePayment(tenantId, payId) {
-      tenants = tenants.map(t => {
-        if (t.id !== tenantId) return t;
-        return { ...t, payments: t.payments.filter(p => p.id !== payId) };
-      });
-      save();
-      notify('Payment deleted.');
-      renderAll();
+    async function deletePayment(tenantId, payId) {
+      const tenant = tenants.find(t => t.id === tenantId);
+      if (!tenant) return;
+
+      const updatedPayments = tenant.payments.filter(p => p.id !== payId);
+      const success = await updateTenantInFirebase(tenantId, { payments: updatedPayments });
+      if (success) {
+        notify('Payment deleted.');
+      }
     }
 
     // ─── DELETE TENANT ────────────────────────────────────────
@@ -904,13 +1011,13 @@
       openModal('modal-confirm');
     }
 
-    function confirmDelete() {
-      tenants = tenants.filter(t => t.id !== pendingDelete);
-      pendingDelete = null;
-      save();
-      closeModal('modal-confirm');
-      notify('Tenant removed.');
-      renderAll();
+    async function confirmDelete() {
+      const success = await deleteTenantFromFirebase(pendingDelete);
+      if (success) {
+        pendingDelete = null;
+        closeModal('modal-confirm');
+        notify('Tenant removed.');
+      }
     }
 
     // ─── MODAL HELPERS ────────────────────────────────────────
@@ -928,9 +1035,6 @@
         if (e.target === overlay) overlay.classList.remove('open');
       });
     });
-
-    // ─── INIT ─────────────────────────────────────────────────
-    renderAll();
   </script>
 </body>
 </html>
