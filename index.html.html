@@ -33,7 +33,6 @@
       min-height: 100vh;
     }
 
-    /* HEADER */
     header {
       background: linear-gradient(135deg, var(--navy) 0%, var(--bg) 100%);
       border-bottom: 1px solid var(--border);
@@ -83,7 +82,6 @@
       display: flex; align-items: center; gap: 6px;
     }
 
-    /* TABS */
     .tabs {
       max-width: 1200px; margin: 0 auto;
       display: flex; gap: 4px;
@@ -97,10 +95,8 @@
     }
     .tab-btn.active { background: var(--blue); color: #fff; }
 
-    /* MAIN */
     main { max-width: 1200px; margin: 0 auto; padding: 24px; }
 
-    /* NOTIFICATION */
     #notification {
       position: fixed; top: 20px; right: 20px; z-index: 9999;
       padding: 12px 20px; border-radius: 10px;
@@ -114,7 +110,6 @@
       to   { transform: translateX(0);     opacity: 1; }
     }
 
-    /* STAT CARDS */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -137,7 +132,6 @@
     .stat-label { font-size: .82rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
     .stat-sub   { font-size: .72rem; color: var(--dim); }
 
-    /* TABLE */
     .table-wrap {
       background: var(--card); border-radius: 14px;
       border: 1px solid var(--border); overflow: hidden;
@@ -161,7 +155,6 @@
     tbody tr:nth-child(even) { background: var(--card2); }
     tbody td { padding: 12px 16px; font-size: .9rem; }
 
-    /* TENANT CARDS */
     .tenants-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -207,7 +200,6 @@
     .mini-label { font-size: .68rem; color: var(--dim); margin-bottom: 3px; }
     .mini-value { font-size: .98rem; font-weight: 700; }
 
-    /* PROGRESS BAR */
     .progress-wrap { margin-bottom: 14px; }
     .progress-top {
       display: flex; justify-content: space-between;
@@ -222,7 +214,6 @@
       transition: width .5s ease;
     }
 
-    /* ACTION BUTTONS */
     .tc-actions { display: flex; gap: 8px; }
 
     .btn-pay {
@@ -251,7 +242,17 @@
       color: var(--dim); font-style: italic;
     }
 
-    /* SEARCH/FILTER */
+    .arrears-notice {
+      background: var(--red);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
     .search-row {
       display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
     }
@@ -272,7 +273,6 @@
     }
     .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
 
-    /* EMPTY STATE */
     .empty {
       text-align: center; padding: 60px 20px;
       color: var(--dim);
@@ -281,7 +281,6 @@
     .empty-title { font-weight: 600; font-size: 1rem; }
     .empty-sub { font-size: .85rem; margin-top: 4px; }
 
-    /* MODAL */
     .modal-overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,.75);
@@ -318,7 +317,6 @@
 
     .modal-body { padding: 24px; }
 
-    /* FORM */
     .form-group { margin-bottom: 16px; }
 
     .form-label {
@@ -336,7 +334,6 @@
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    /* MODAL FOOTER BUTTONS */
     .modal-footer { display: flex; gap: 10px; margin-top: 8px; }
 
     .btn-cancel {
@@ -365,7 +362,6 @@
       cursor: pointer; font-weight: 700;
     }
 
-    /* PAYMENT SUMMARY IN PAY MODAL */
     .pay-summary {
       background: var(--bg); border-radius: 10px; padding: 14px;
       margin-bottom: 20px;
@@ -375,14 +371,12 @@
     .pay-sum-label { font-size: .68rem; color: var(--dim); margin-bottom: 3px; }
     .pay-sum-val { font-size: .95rem; font-weight: 700; }
 
-    /* PAYMENT HISTORY ROWS */
     .hist-del-btn {
       background: #3f1212; color: var(--red);
       border: none; padding: 5px 12px;
       border-radius: 6px; cursor: pointer; font-size: .78rem;
     }
 
-    /* CONFIRM MODAL */
     .confirm-body { padding: 28px; text-align: center; }
     .confirm-icon { font-size: 3rem; margin-bottom: 12px; }
     .confirm-title { font-weight: 800; font-size: 1.05rem; color: #f1f5f9; margin-bottom: 8px; }
@@ -397,13 +391,11 @@
       display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* Loading */
     .loading {
       text-align: center; padding: 60px; color: var(--blue);
       font-size: 1.1rem; font-weight: 600;
     }
 
-    /* Responsive */
     @media (max-width: 600px) {
       .form-row { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -418,10 +410,8 @@
 </head>
 <body>
 
-  <!-- NOTIFICATION -->
   <div id="notification"></div>
 
-  <!-- HEADER -->
   <header>
     <div class="header-top">
       <div class="logo">
@@ -446,7 +436,6 @@
   <main>
     <div id="loading" class="loading">Loading your data from cloud...</div>
     
-    <!-- DASHBOARD TAB -->
     <div id="tab-dashboard" style="display:none">
       <div class="stats-grid" id="stats-grid"></div>
       <div class="table-wrap">
@@ -455,7 +444,6 @@
       </div>
     </div>
 
-    <!-- TENANTS TAB -->
     <div id="tab-tenants" style="display:none">
       <div class="search-row">
         <input class="search-input" id="search-input" placeholder="🔍  Search by name, room or phone..." oninput="renderTenants()">
@@ -467,14 +455,12 @@
       <div class="tenants-grid" id="tenants-grid"></div>
     </div>
 
-    <!-- PAYMENTS TAB -->
     <div id="tab-payments" style="display:none">
       <div style="font-weight:700;font-size:1.05rem;color:#f1f5f9;margin-bottom:20px;">💰 Payment History — All Tenants</div>
       <div id="payments-list"></div>
     </div>
   </main>
 
-  <!-- ADD TENANT MODAL -->
   <div class="modal-overlay" id="modal-add">
     <div class="modal modal-md">
       <div class="modal-header">
@@ -512,7 +498,6 @@
     </div>
   </div>
 
-  <!-- RECORD PAYMENT MODAL -->
   <div class="modal-overlay" id="modal-pay">
     <div class="modal modal-sm">
       <div class="modal-header">
@@ -544,7 +529,6 @@
     </div>
   </div>
 
-  <!-- CONFIRM DELETE MODAL -->
   <div class="modal-overlay" id="modal-confirm">
     <div class="modal modal-sm">
       <div class="confirm-body">
@@ -559,12 +543,10 @@
     </div>
   </div>
 
-  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBRNST5CSSLvEIPzPoZNtJi7arruX9SJFI",
       authDomain: "tracking-system-1c5e3.firebaseapp.com",
@@ -575,18 +557,15 @@
       measurementId: "G-2XFK5E1JS4"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const tenantsRef = collection(db, 'tenants');
 
-    // Global State
     window.tenants = [];
     window.currentFilter = 'all';
     window.currentPayId = null;
     window.pendingDelete = null;
 
-    // Sync Status
     function updateSyncStatus(status) {
       const el = document.getElementById('sync-status');
       if (status === 'synced') {
@@ -598,12 +577,51 @@
       }
     }
 
-    // Load Tenants from Firebase (Real-time)
-    onSnapshot(tenantsRef, (snapshot) => {
+    // Check if we need to reset monthly rent for tenant
+    async function checkMonthlyReset(tenant) {
+      const today = new Date();
+      const currentMonth = today.toISOString().slice(0, 7); // YYYY-MM
+      
+      // Get tenant's last reset month
+      const lastReset = tenant.currentMonth || tenant.joinDate?.slice(0, 7);
+      
+      // If it's a new month, process reset
+      if (currentMonth !== lastReset) {
+        const totalPaid = (tenant.monthlyPayments || []).reduce((sum, p) => sum + p.amount, 0);
+        const previousBalance = tenant.rent - totalPaid;
+        const arrears = previousBalance > 0 ? previousBalance : 0;
+        
+        // Archive last month's payments
+        const archived = tenant.archivedPayments || [];
+        if (tenant.monthlyPayments && tenant.monthlyPayments.length > 0) {
+          archived.push({
+            month: lastReset,
+            rent: tenant.rent,
+            payments: tenant.monthlyPayments,
+            arrears: arrears
+          });
+        }
+        
+        // Reset for new month
+        await updateTenantInFirebase(tenant.id, {
+          currentMonth: currentMonth,
+          monthlyPayments: [],
+          arrears: arrears,
+          archivedPayments: archived
+        });
+      }
+    }
+
+    onSnapshot(tenantsRef, async (snapshot) => {
       window.tenants = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      
+      // Check monthly reset for all tenants
+      for (const tenant of window.tenants) {
+        await checkMonthlyReset(tenant);
+      }
       
       document.getElementById('loading').style.display = 'none';
       document.getElementById('tab-dashboard').style.display = '';
@@ -612,7 +630,6 @@
       updateSyncStatus('synced');
     });
 
-    // Save Tenant to Firebase
     window.saveTenantToFirebase = async (tenantData) => {
       try {
         updateSyncStatus('syncing');
@@ -626,7 +643,6 @@
       }
     };
 
-    // Update Tenant in Firebase
     window.updateTenantInFirebase = async (id, data) => {
       try {
         updateSyncStatus('syncing');
@@ -641,7 +657,6 @@
       }
     };
 
-    // Delete Tenant from Firebase
     window.deleteTenantFromFirebase = async (id) => {
       try {
         updateSyncStatus('syncing');
@@ -658,7 +673,6 @@
   </script>
 
   <script>
-    // ─── NOTIFICATION ─────────────────────────────────────────
     function notify(msg, type = 'success') {
       const el = document.getElementById('notification');
       el.textContent = (type === 'error' ? '⚠️ ' : '✅ ') + msg;
@@ -667,7 +681,6 @@
       setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // ─── TABS ─────────────────────────────────────────────────
     function switchTab(tab, btn) {
       ['dashboard','tenants','payments'].forEach(t => {
         document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -677,21 +690,23 @@
       renderAll();
     }
 
-    // ─── STATUS ───────────────────────────────────────────────
+    function getCurrentBalance(t) {
+      const monthlyPaid = (t.monthlyPayments || []).reduce((s, p) => s + p.amount, 0);
+      const totalDue = t.rent + (t.arrears || 0);
+      return Math.max(0, totalDue - monthlyPaid);
+    }
+
+    function getMonthlyPaid(t) {
+      return (t.monthlyPayments || []).reduce((s, p) => s + p.amount, 0);
+    }
+
     function getStatus(t) {
-      const paid = t.payments.reduce((s, p) => s + p.amount, 0);
-      if (paid <= 0)       return { label: 'Unpaid',  cls: 'badge-unpaid',  pct: 0 };
-      if (paid >= t.rent)  return { label: 'Fully Paid', cls: 'badge-paid', pct: 100 };
-      return { label: 'Partial', cls: 'badge-partial', pct: Math.round((paid / t.rent) * 100) };
-    }
-
-    function getBalance(t) {
-      const paid = t.payments.reduce((s, p) => s + p.amount, 0);
-      return Math.max(0, t.rent - paid);
-    }
-
-    function getPaid(t) {
-      return t.payments.reduce((s, p) => s + p.amount, 0);
+      const paid = getMonthlyPaid(t);
+      const due = t.rent + (t.arrears || 0);
+      
+      if (paid <= 0)    return { label: 'Unpaid',  cls: 'badge-unpaid',  pct: 0 };
+      if (paid >= due)  return { label: 'Fully Paid', cls: 'badge-paid', pct: 100 };
+      return { label: 'Partial', cls: 'badge-partial', pct: Math.round((paid / due) * 100) };
     }
 
     function progressColor(pct) {
@@ -700,28 +715,26 @@
       return '#f87171';
     }
 
-    // ─── RENDER ALL ───────────────────────────────────────────
     function renderAll() {
       renderDashboard();
       renderTenants();
       renderPayments();
     }
 
-    // ─── DASHBOARD ────────────────────────────────────────────
     function renderDashboard() {
-      const totalRent      = tenants.reduce((s, t) => s + t.rent, 0);
-      const totalCollected = tenants.reduce((s, t) => s + getPaid(t), 0);
-      const totalBalance   = tenants.reduce((s, t) => s + getBalance(t), 0);
-      const fullyPaid      = tenants.filter(t => getBalance(t) === 0 && getPaid(t) > 0).length;
-      const overdue        = tenants.filter(t => getPaid(t) === 0).length;
+      const totalRent      = tenants.reduce((s, t) => s + t.rent + (t.arrears || 0), 0);
+      const totalCollected = tenants.reduce((s, t) => s + getMonthlyPaid(t), 0);
+      const totalBalance   = tenants.reduce((s, t) => s + getCurrentBalance(t), 0);
+      const fullyPaid      = tenants.filter(t => getCurrentBalance(t) === 0 && getMonthlyPaid(t) > 0).length;
+      const overdue        = tenants.filter(t => getMonthlyPaid(t) === 0).length;
 
       const stats = [
         { label:'Total Tenants',       value: tenants.length,                          icon:'👥', color:'#38bdf8', sub:'registered'  },
-        { label:'Expected Rent',        value:`KES ${totalRent.toLocaleString()}`,       icon:'🏠', color:'#a78bfa', sub:'this month'  },
-        { label:'Amount Collected',     value:`KES ${totalCollected.toLocaleString()}`,  icon:'💰', color:'#34d399', sub:'received'    },
-        { label:'Outstanding Balance',  value:`KES ${totalBalance.toLocaleString()}`,    icon:'⚠️', color:'#f87171', sub:'pending'     },
-        { label:'Fully Paid',           value: fullyPaid,                               icon:'✅', color:'#34d399', sub:'tenants'     },
-        { label:'Not Paid',             value: overdue,                                 icon:'🔴', color:'#f87171', sub:'tenants'     },
+        { label:'Expected This Month', value:`KES ${totalRent.toLocaleString()}`,      icon:'🏠', color:'#a78bfa', sub:'inc. arrears'  },
+        { label:'Amount Collected',    value:`KES ${totalCollected.toLocaleString()}`, icon:'💰', color:'#34d399', sub:'this month'  },
+        { label:'Outstanding Balance', value:`KES ${totalBalance.toLocaleString()}`,   icon:'⚠️', color:'#f87171', sub:'pending'     },
+        { label:'Fully Paid',          value: fullyPaid,                               icon:'✅', color:'#34d399', sub:'tenants'     },
+        { label:'Not Paid',            value: overdue,                                 icon:'🔴', color:'#f87171', sub:'tenants'     },
       ];
 
       document.getElementById('stats-grid').innerHTML = stats.map(s => `
@@ -750,20 +763,22 @@
             <thead>
               <tr>
                 <th>Room</th><th>Tenant Name</th><th>Phone</th>
-                <th>Monthly Rent</th><th>Paid</th><th>Balance</th><th>Status</th>
+                <th>Monthly Rent</th><th>Arrears</th><th>Paid This Month</th><th>Balance</th><th>Status</th>
               </tr>
             </thead>
             <tbody>
               ${tenants.map(t => {
-                const paid = getPaid(t);
-                const bal  = getBalance(t);
+                const paid = getMonthlyPaid(t);
+                const bal  = getCurrentBalance(t);
                 const st   = getStatus(t);
+                const arrears = t.arrears || 0;
                 return `
                   <tr>
                     <td style="color:#38bdf8;font-weight:700">#${t.room}</td>
                     <td style="color:#f1f5f9;font-weight:600">${t.name}</td>
                     <td style="color:#94a3b8">${t.phone}</td>
                     <td style="color:#a78bfa;font-weight:600">KES ${t.rent.toLocaleString()}</td>
+                    <td style="color:${arrears > 0 ? '#f87171' : '#64748b'};font-weight:${arrears > 0 ? '700' : '400'}">KES ${arrears.toLocaleString()}</td>
                     <td style="color:#34d399;font-weight:600">KES ${paid.toLocaleString()}</td>
                     <td style="color:${bal > 0 ? '#f87171' : '#34d399'};font-weight:700">KES ${bal.toLocaleString()}</td>
                     <td><span class="badge ${st.cls}">${st.label}</span></td>
@@ -774,7 +789,6 @@
         </div>`;
     }
 
-    // ─── TENANTS ──────────────────────────────────────────────
     function setFilter(f, btn) {
       currentFilter = f;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -789,8 +803,8 @@
         const matchQ = t.name.toLowerCase().includes(q) ||
                        t.room.toLowerCase().includes(q)  ||
                        t.phone.includes(q);
-        const paid = getPaid(t);
-        const bal  = getBalance(t);
+        const paid = getMonthlyPaid(t);
+        const bal  = getCurrentBalance(t);
         const matchF =
           currentFilter === 'all'     ? true :
           currentFilter === 'paid'    ? bal === 0 && paid > 0 :
@@ -810,10 +824,12 @@
       }
 
       grid.innerHTML = list.map(t => {
-        const paid = getPaid(t);
-        const bal  = getBalance(t);
+        const paid = getMonthlyPaid(t);
+        const bal  = getCurrentBalance(t);
         const st   = getStatus(t);
         const pct  = st.pct;
+        const arrears = t.arrears || 0;
+        const totalDue = t.rent + arrears;
         return `
           <div class="tenant-card">
             <div class="tc-header">
@@ -825,9 +841,10 @@
               <span class="badge ${st.cls}">${st.label}</span>
             </div>
             <div class="tc-body">
+              ${arrears > 0 ? `<div class="arrears-notice">⚠️ Arrears: KES ${arrears.toLocaleString()}</div>` : ''}
               <div class="mini-stats">
                 <div class="mini-stat">
-                  <div class="mini-label">MONTHLY</div>
+                  <div class="mini-label">RENT</div>
                   <div class="mini-value" style="color:#a78bfa">KES ${t.rent.toLocaleString()}</div>
                 </div>
                 <div class="mini-stat">
@@ -839,6 +856,7 @@
                   <div class="mini-value" style="color:${bal > 0 ? '#f87171' : '#34d399'}">KES ${bal.toLocaleString()}</div>
                 </div>
               </div>
+              ${arrears > 0 ? `<div style="font-size:0.75rem;color:#64748b;margin-bottom:8px;text-align:center">Total Due: KES ${totalDue.toLocaleString()}</div>` : ''}
               <div class="progress-wrap">
                 <div class="progress-top">
                   <span>Payment Progress</span>
@@ -859,10 +877,12 @@
       }).join('');
     }
 
-    // ─── PAYMENTS TAB ─────────────────────────────────────────
     function renderPayments() {
       const el = document.getElementById('payments-list');
-      const withPayments = tenants.filter(t => t.payments && t.payments.length > 0);
+      const withPayments = tenants.filter(t => 
+        (t.monthlyPayments && t.monthlyPayments.length > 0) || 
+        (t.archivedPayments && t.archivedPayments.length > 0)
+      );
 
       if (withPayments.length === 0) {
         el.innerHTML = `<div class="empty">
@@ -873,14 +893,23 @@
         return;
       }
 
-      el.innerHTML = withPayments.map(t => `
+      el.innerHTML = withPayments.map(t => {
+        const currentPayments = t.monthlyPayments || [];
+        const archived = t.archivedPayments || [];
+        
+        return `
         <div class="payments-tab-wrap">
           <div class="payments-tab-head">
             <div>
               <span style="color:#38bdf8;font-weight:700">Room #${t.room}</span>
               <span style="color:#94a3b8;margin-left:10px">${t.name}</span>
             </div>
-            <span style="color:#64748b;font-size:.82rem">${t.payments.length} payment(s)</span>
+            <span style="color:#64748b;font-size:.82rem">${currentPayments.length} payment(s) this month</span>
+          </div>
+          
+          ${currentPayments.length > 0 ? `
+          <div style="padding:12px 20px;background:#0f172a;font-weight:700;font-size:0.85rem;color:#38bdf8;">
+            Current Month Payments
           </div>
           <div style="overflow-x:auto">
             <table>
@@ -890,7 +919,7 @@
                 </tr>
               </thead>
               <tbody>
-                ${t.payments.map(p => `
+                ${currentPayments.map(p => `
                   <tr>
                     <td style="color:#94a3b8">📅 ${p.date}</td>
                     <td style="color:#34d399;font-weight:700">KES ${p.amount.toLocaleString()}</td>
@@ -899,11 +928,28 @@
                   </tr>`).join('')}
               </tbody>
             </table>
+          </div>` : ''}
+          
+          ${archived.length > 0 ? `
+          <div style="padding:12px 20px;background:#1a1a2e;font-weight:700;font-size:0.85rem;color:#94a3b8;margin-top:10px;">
+            Previous Months
           </div>
-        </div>`).join('');
+          ${archived.reverse().map(arch => `
+            <div style="padding:12px 20px;background:#0f172a;border-top:1px solid #1e293b;">
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:8px;">
+                <strong style="color:#38bdf8;">${arch.month}</strong> 
+                | Rent: KES ${arch.rent.toLocaleString()} 
+                ${arch.arrears > 0 ? `| Arrears Carried: KES ${arch.arrears.toLocaleString()}` : ''}
+              </div>
+              <div style="font-size:0.75rem;color:#94a3b8;">
+                ${arch.payments.map(p => `${p.date}: KES ${p.amount.toLocaleString()}`).join(' • ')}
+              </div>
+            </div>
+          `).join('')}` : ''}
+        </div>`;
+      }).join('');
     }
 
-    // ─── ADD TENANT ───────────────────────────────────────────
     function openAddModal() {
       ['f-name','f-room','f-rent','f-phone','f-notes'].forEach(id => {
         document.getElementById(id).value = '';
@@ -925,9 +971,13 @@
         notify('Room number already exists!', 'error'); return;
       }
 
+      const currentMonth = new Date().toISOString().slice(0, 7);
       const newTenant = {
         name, room, phone, rent, notes,
-        payments: [],
+        monthlyPayments: [],
+        archivedPayments: [],
+        arrears: 0,
+        currentMonth: currentMonth,
         joinDate: new Date().toISOString().split('T')[0]
       };
 
@@ -938,20 +988,29 @@
       }
     }
 
-    // ─── PAYMENT ──────────────────────────────────────────────
     function openPayModal(id) {
       const t = tenants.find(t => t.id === id);
       if (!t) return;
       currentPayId = id;
 
-      const paid = getPaid(t);
-      const bal  = getBalance(t);
+      const paid = getMonthlyPaid(t);
+      const bal  = getCurrentBalance(t);
+      const arrears = t.arrears || 0;
+      const totalDue = t.rent + arrears;
 
       document.getElementById('pay-modal-sub').textContent = `Room #${t.room} — ${t.name}`;
       document.getElementById('pay-summary').innerHTML = `
         <div class="pay-sum-item">
-          <div class="pay-sum-label">MONTHLY</div>
+          <div class="pay-sum-label">MONTHLY RENT</div>
           <div class="pay-sum-val" style="color:#a78bfa">KES ${t.rent.toLocaleString()}</div>
+        </div>
+        <div class="pay-sum-item">
+          <div class="pay-sum-label">ARREARS</div>
+          <div class="pay-sum-val" style="color:${arrears > 0 ? '#f87171' : '#64748b'}">KES ${arrears.toLocaleString()}</div>
+        </div>
+        <div class="pay-sum-item">
+          <div class="pay-sum-label">TOTAL DUE</div>
+          <div class="pay-sum-val" style="color:#fbbf24">KES ${totalDue.toLocaleString()}</div>
         </div>
         <div class="pay-sum-item">
           <div class="pay-sum-label">PAID</div>
@@ -979,33 +1038,31 @@
       const tenant = tenants.find(t => t.id === currentPayId);
       if (!tenant) return;
 
-      const updatedPayments = [...(tenant.payments || []), {
+      const updatedPayments = [...(tenant.monthlyPayments || []), {
         id: Date.now().toString(),
         amount: amt,
         date,
         note
       }];
 
-      const success = await updateTenantInFirebase(currentPayId, { payments: updatedPayments });
+      const success = await updateTenantInFirebase(currentPayId, { monthlyPayments: updatedPayments });
       if (success) {
         closeModal('modal-pay');
         notify('Payment recorded successfully!');
       }
     }
 
-    // ─── DELETE PAYMENT ───────────────────────────────────────
     async function deletePayment(tenantId, payId) {
       const tenant = tenants.find(t => t.id === tenantId);
       if (!tenant) return;
 
-      const updatedPayments = tenant.payments.filter(p => p.id !== payId);
-      const success = await updateTenantInFirebase(tenantId, { payments: updatedPayments });
+      const updatedPayments = (tenant.monthlyPayments || []).filter(p => p.id !== payId);
+      const success = await updateTenantInFirebase(tenantId, { monthlyPayments: updatedPayments });
       if (success) {
         notify('Payment deleted.');
       }
     }
 
-    // ─── DELETE TENANT ────────────────────────────────────────
     function openConfirm(id) {
       pendingDelete = id;
       openModal('modal-confirm');
@@ -1020,7 +1077,6 @@
       }
     }
 
-    // ─── MODAL HELPERS ────────────────────────────────────────
     function openModal(id)  { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -1029,7 +1085,6 @@
       switchTab('payments', btns[2]);
     }
 
-    // Close modals when clicking overlay
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', e => {
         if (e.target === overlay) overlay.classList.remove('open');
